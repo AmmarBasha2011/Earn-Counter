@@ -1,0 +1,21 @@
+{
+  "name": "محاسب الفواتير الذكي",
+  "short_name": "المحاسب الذكي",
+  "description": "تطبيق لإدارة المنتجات وتحليل فواتير الشراء واستخراج الأرباح تلقائياً باستخدام الذكاء الاصطناعي.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/invoice/192/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://picsum.photos/seed/invoice/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
