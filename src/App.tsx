@@ -90,14 +90,18 @@ export default function App() {
     onDrop,
     accept: { 'image/*': [] },
     multiple: false
-  });
+  } as any);
 
   const analyzeInvoice = async (base64Image: string) => {
     setIsAnalyzing(true);
     setError(null);
     try {
       const model = "gemini-3-flash-preview";
+      const productList = products.map(p => p.name).join(', ');
+      
       const prompt = `حلل صورة الفاتورة هذه واستخرج قائمة بالمنتجات. لكل منتج، استخرج الاسم وسعر البيع والكمية. 
+      لديك قائمة بالمنتجات المسجلة مسبقاً: [${productList}]. حاول مطابقة الأسماء في الفاتورة مع هذه القائمة.
+      ملاحظة هامة: إذا وجدت بنوداً مثل "الكلارك" أو "نقل" أو "توصيل"، استخرجها أيضاً.
       أريد النتيجة بتنسيق JSON فقط كمصفوفة من الكائنات:
       [{"name": "اسم المنتج", "sellingPrice": 10.5, "quantity": 1}]
       تأكد من أن الأسماء باللغة العربية كما هي في الفاتورة.`;
@@ -138,12 +142,25 @@ export default function App() {
       
       // Match with existing products to get purchase price
       const itemsWithPurchasePrice = extractedItems.map((item: any) => {
-        const matchedProduct = products.find(p => p.name.toLowerCase().includes(item.name.toLowerCase()) || item.name.toLowerCase().includes(p.name.toLowerCase()));
+        const isSpecialItem = item.name.includes('الكلارك') || item.name.includes('نقل') || item.name.includes('توصيل');
+        
+        const matchedProduct = products.find(p => 
+          p.name.toLowerCase().includes(item.name.toLowerCase()) || 
+          item.name.toLowerCase().includes(p.name.toLowerCase())
+        );
+
+        let purchasePrice = matchedProduct ? matchedProduct.purchasePrice : 0;
+        
+        // If it's a special item (Clark/Transfer), set purchase price same as selling price to have 0 profit
+        if (isSpecialItem) {
+          purchasePrice = item.sellingPrice;
+        }
+
         return {
           id: crypto.randomUUID(),
           name: item.name,
           sellingPrice: item.sellingPrice,
-          purchasePrice: matchedProduct ? matchedProduct.purchasePrice : 0,
+          purchasePrice: purchasePrice,
           quantity: item.quantity || 1
         };
       });
