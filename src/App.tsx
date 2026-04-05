@@ -101,7 +101,7 @@ export default function App() {
       
       const prompt = `حلل صورة الفاتورة هذه واستخرج قائمة بالمنتجات. لكل منتج، استخرج الاسم وسعر البيع والكمية. 
       لديك قائمة بالمنتجات المسجلة مسبقاً: [${productList}]. حاول مطابقة الأسماء في الفاتورة مع هذه القائمة.
-      ملاحظة هامة: إذا وجدت بنوداً مثل "الكلارك" أو "كلارك" أو "نقل" أو "توصيل"، استخرجها أيضاً.
+      ملاحظة هامة: إذا وجدت بنوداً مثل "الكلارك" أو "كلارك" أو "نقل" أو "النقل" أو "توصيل"، استخرجها أيضاً. هذه البنود تعتبر خدمات أو تكاليف إضافية وليس لها ربح (سعر الشراء يساوي سعر البيع).
       أريد النتيجة بتنسيق JSON فقط كمصفوفة من الكائنات:
       [{"name": "اسم المنتج", "sellingPrice": 10.5, "quantity": 1}]
       تأكد من أن الأسماء باللغة العربية كما هي في الفاتورة.`;
@@ -142,7 +142,12 @@ export default function App() {
       
       // Match with existing products to get purchase price
       const itemsWithPurchasePrice = extractedItems.map((item: any) => {
-        const isSpecialItem = item.name.includes('الكلارك') || item.name.includes('كلارك') || item.name.includes('نقل') || item.name.includes('توصيل');
+        const isSpecialItem = 
+          item.name.includes('الكلارك') || 
+          item.name.includes('كلارك') || 
+          item.name.includes('نقل') || 
+          item.name.includes('النقل') || 
+          item.name.includes('توصيل');
         
         const matchedProduct = products.find(p => 
           p.name.toLowerCase().includes(item.name.toLowerCase()) || 
