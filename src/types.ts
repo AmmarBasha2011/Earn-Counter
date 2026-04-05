@@ -4,6 +4,12 @@ export interface Product {
   purchasePrice: number;
 }
 
+export interface Affiliate {
+  id: string;
+  name: string;
+  percentage: number;
+}
+
 export interface InvoiceItem {
   id: string;
   name: string;
@@ -17,5 +23,8 @@ export interface SavedInvoice {
   date: string;
   items: InvoiceItem[];
   totalProfit: number;
+  affiliateId?: string;
+  affiliateName?: string;
+  affiliateShare?: number;
   image?: string;
 }
